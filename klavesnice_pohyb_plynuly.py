@@ -78,4 +78,4 @@ while lets_continue:
 
 # Ukonceni pygame
 pygame.quit()
-# 33
+# 6

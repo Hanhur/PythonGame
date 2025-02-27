@@ -10,9 +10,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Harry Potter Game")
 
 # Zakladni nastaveni
-distance = 10
-fps = 60
-clock = pygame.time.Clock()
+distance = 20
 
 # Colors
 black = (0, 0, 0)
@@ -49,17 +47,19 @@ while lets_continue:
         if event.type == pygame.QUIT:
             lets_continue = False
 
-    # w - nahoru, s - dolů, a - vlevo, d - vpravo
-    # Vypis vsech klaves
-    keys = pygame.key.get_pressed()
-    if (keys[pygame.K_UP] or keys[pygame.K_w]) and potter_image_rect.top > 0:
-        potter_image_rect.y -= distance
-    elif (keys[pygame.K_DOWN] or keys[pygame.K_s]) and potter_image_rect.bottom < height:
-        potter_image_rect.y += distance
-    elif (keys[pygame.K_LEFT] or keys[pygame.K_a]) and potter_image_rect.left > 0:
-        potter_image_rect.x -= distance
-    elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and potter_image_rect.right < width:
-        potter_image_rect.x += distance
+        # Posun obrazku
+        if event.type == pygame.KEYDOWN:
+            # print(pygame.key.name(event.key))
+            if event.key == pygame.K_UP:
+                # potter_image_rect.y = potter_image_rect.y - 10
+                potter_image_rect.y -= distance
+            elif event.key == pygame.K_DOWN:
+                # potter_image_rect.y = potter_image_rect.y + 10
+                potter_image_rect.y += distance
+            elif event.key == pygame.K_LEFT:
+                potter_image_rect.x -= distance
+            elif event.key == pygame.K_RIGHT:
+                potter_image_rect.x += distance
 
     # Vyplneni obrazovky cernou barnou
     screen.fill((0, 0, 0,))
@@ -73,9 +73,6 @@ while lets_continue:
     # Update
     pygame.display.update()
 
-    # tikání hodin
-    clock.tick(fps)
-
 # Ukonceni pygame
 pygame.quit()
-# 33
+# 6
