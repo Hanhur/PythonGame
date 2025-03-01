@@ -1,81 +1,103 @@
+# Small Game
 import pygame
-# https://iconarchive.com/
-# Inicializace pygame
+import  random
+
+# Inicializace hry
 pygame.init()
 
-# Vytvoreni obrazovky
-width = 1000
-height = 500
+# Obrazovka
+width = 600
+height = 300
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Harry Potter Game")
+pygame.display.set_caption("Harry Potter Small Game")
 
-# Zakladni nastaveni
-distance = 10
-fps = 60
+# Nastavení hry
+distance = 5
 clock = pygame.time.Clock()
+fps = 60
+score = 0
 
-# Colors
+# Barvy
+# https://0to255.com/
 black = (0, 0, 0)
-white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-yellow = (255, 255, 0)
+dark_yellow = pygame.Color("#938f0c")
 
-# Barav pozadi
-screen.fill(black)
+# Hudba v pozadí
+pygame.mixer.music.load("media/bg-music-hp.wav")
+# Přehrání hudby v pozadí
+pygame.mixer.music.play(-1, 0.0)
+# Nahrání zvuku
+hedvika_sound = pygame.mixer.Sound("media/hedvika-sound.mp3")
+hedvika_sound.set_volume(0.1)
 
-# Nastaveni fontu
-custom_font = pygame.font.Font("fonts/Harry.ttf", 50)
+# Nastavení fontu
+font_harry = pygame.font.Font("fonts/Harry.ttf", 30)
 
-# Font a text
-custom_text = custom_font.render("Harry Potter Game", True, green)
-custom_text_rect = custom_text.get_rect()
-custom_text_rect.midtop = (width // 2, 5)
+# Texty
+potter_text = font_harry.render("Harry Potter Game", True, dark_yellow)
+potter_text_rect = potter_text.get_rect()
+potter_text_rect.centerx = width // 2
+potter_text_rect.top = 10
 
-# Tvary
-pygame.draw.line(screen, green, (0, 60), (width, 60), 2)
-
-# Obrázek
+# Obrazky
 potter_image = pygame.image.load("img/harryPotter.png")
 potter_image_rect = potter_image.get_rect()
 potter_image_rect.center = (width // 2, height // 2)
 
+hedvika_image = pygame.image.load("img/owl-icon.png")
+hedvika_image_rect = hedvika_image.get_rect()
+hedvika_image_rect.center = (50, height // 2)
 
-# Hlavni herni cyklus
+# Hlavní cyklus
 lets_continue = True
 while lets_continue:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             lets_continue = False
 
-    # w - nahoru, s - dolů, a - vlevo, d - vpravo
-    # Vypis vsech klaves
     keys = pygame.key.get_pressed()
-    if (keys[pygame.K_UP] or keys[pygame.K_w]) and potter_image_rect.top > 0:
+    if keys[pygame.K_UP] and potter_image_rect.top > 50:
         potter_image_rect.y -= distance
-    elif (keys[pygame.K_DOWN] or keys[pygame.K_s]) and potter_image_rect.bottom < height:
+    elif keys[pygame.K_DOWN] and potter_image_rect.bottom < height:
         potter_image_rect.y += distance
-    elif (keys[pygame.K_LEFT] or keys[pygame.K_a]) and potter_image_rect.left > 0:
+    elif keys[pygame.K_LEFT] and potter_image_rect.left > 0:
         potter_image_rect.x -= distance
-    elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and potter_image_rect.right < width:
+    elif keys[pygame.K_RIGHT] and potter_image_rect.right < width:
         potter_image_rect.x += distance
 
-    # Vyplneni obrazovky cernou barnou
-    screen.fill((0, 0, 0,))
+    # Kontrola kolize
+    if potter_image_rect.colliderect(hedvika_image_rect):
+        hedvika_image_rect.centerx = random.randint(0 + 16, width - 16)
+        hedvika_image_rect.centery = random.randint(50 + 16, height - 16)
+        score += 1
+        hedvika_sound.play()
 
-    # Text
-    screen.blit(custom_text, custom_text_rect)
+    # Vykreslení obrazovky
+    screen.fill(black)
 
-    # Obrázky
+    # Tvary
+    pygame.draw.line(screen, dark_yellow, (0, 50), (width, 50), 2)
+
+    # Score
+    score_text = font_harry.render(f"Score: {score}", True, dark_yellow)
+    score_text_rect = score_text.get_rect()
+    score_text_rect.x = 10
+    score_text_rect.y = 10
+
+    # Obrazky
     screen.blit(potter_image, potter_image_rect)
+    screen.blit(hedvika_image, hedvika_image_rect)
+    screen.blit(potter_text, potter_text_rect)
+    screen.blit(score_text, score_text_rect)
 
-    # Update
+    # Update obrazovky
     pygame.display.update()
 
-    # tikání hodin
+    # Tikání hodin
     clock.tick(fps)
 
-# Ukonceni pygame
+# Ukončení hry
 pygame.quit()
-# 33
